@@ -1,3 +1,10 @@
+# Haskell Language Pragma Popularity
+The gist of it:
+
+* Certain extensions in haskell are more popular than others.
+* Certain extensions appear together.
+* Completions in IDEs etc. can take advantage of this.
+
 <!--pandoc
 format:html
 standalone:
@@ -10,6 +17,7 @@ opts_chunk$set(cache = T, tidy = F)
 ```
 
 
+Run the cabalf.hs, which searches through all packages you have in `$HOME/.cabal/packages/hackage.haskell.org` (for now) and produces the file `generated/pp.csv`.
 
 ```r
 library(ggplot2); library(plyr)
@@ -21,6 +29,7 @@ xext <- ddply(x, .(ext), function(x) c(count=sum(x$count)))
 nFiles <- nlevels(interaction(x$pkg, x$fileid))
 ```
 
+By far, the C preprocessor occurs the most times.
 
 ```r
 plot(ggplot(xext, aes(count / nFiles, reorder(ext, count)))
@@ -30,9 +39,8 @@ plot(ggplot(xext, aes(count / nFiles, reorder(ext, count)))
 
 ![how many times is Extension written per file?](figure/unnamed-chunk-3.png) 
 
-Certain extensions are the most popular.
-
-The overall frequency may not be the whole story: certain extensions tend to be enabled together. Here is a principal-components analysis. The order in which the completions are supplied matches the principal component that matches the currently enabled extensions the best. An artificial neural network (ANN) should be more appropriate?
+## more involved predictions
+The overall frequency in the above graph may not tell the whole story: certain extensions tend to be enabled together. Here is a principal-components analysis. The order in which the completions are supplied matches the principal component that matches the currently enabled extensions the best. An artificial neural network (ANN) uses similar ideas,but has the following advantage: this PCA-based method doesn't care about the signs, so a file with extensions `A` and `C` enabled will give the same prediction as a file with just `B` enabled.
 
 ```r
 x2 <- ddply(x, .(pkg), function(x)

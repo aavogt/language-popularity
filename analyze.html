@@ -26,6 +26,13 @@ code > span.er { color: #ff0000; font-weight: bold; }
   </style>
 </head>
 <body>
+<h1 id="haskell-language-pragma-popularity">Haskell Language Pragma Popularity</h1>
+<p>The gist of it:</p>
+<ul>
+<li>Certain extensions in haskell are more popular than others.</li>
+<li>Certain extensions appear together.</li>
+<li>Completions in IDEs etc. can take advantage of this.</li>
+</ul>
 <!--pandoc
 format:html
 standalone:
@@ -34,6 +41,7 @@ standalone:
 
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(knitr)
 opts_chunk$<span class="kw">set</span>(<span class="dt">cache =</span> T, <span class="dt">tidy =</span> F)</code></pre>
+<p>Run the cabalf.hs, which searches through all packages you have in <code>$HOME/.cabal/packages/hackage.haskell.org</code> (for now) and produces the file <code>generated/pp.csv</code>.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2); <span class="kw">library</span>(plyr)
 <span class="kw">library</span>(reshape2)
 <span class="kw">system</span>(<span class="st">&#39;ghc -package ghc -O2 cabalf.hs&#39;</span>)
@@ -41,14 +49,15 @@ opts_chunk$<span class="kw">set</span>(<span class="dt">cache =</span> T, <span 
 x &lt;- <span class="kw">read.csv</span>(<span class="st">&#39;generated/pp.csv&#39;</span>)
 xext &lt;- <span class="kw">ddply</span>(x, .(ext), function(x) <span class="kw">c</span>(<span class="dt">count=</span><span class="kw">sum</span>(x$count)))
 nFiles &lt;- <span class="kw">nlevels</span>(<span class="kw">interaction</span>(x$pkg, x$fileid))</code></pre>
+<p>By far, the C preprocessor occurs the most times.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">ggplot</span>(xext, <span class="kw">aes</span>(count / nFiles, <span class="kw">reorder</span>(ext, count)))
      + <span class="kw">geom_point</span>()
      + <span class="kw">ylab</span>(<span class="st">&#39;&#39;</span>))</code></pre>
 <div class="figure">
 <img src="figure/unnamed-chunk-3.png" alt="how many times is Extension written per file?" /><p class="caption">how many times is Extension written per file?</p>
 </div>
-<p>Certain extensions are the most popular.</p>
-<p>The overall frequency may not be the whole story: certain extensions tend to be enabled together. Here is a principal-components analysis. The order in which the completions are supplied matches the principal component that matches the currently enabled extensions the best. An artificial neural network (ANN) should be more appropriate?</p>
+<h2 id="more-involved-predictions">more involved predictions</h2>
+<p>The overall frequency in the above graph may not tell the whole story: certain extensions tend to be enabled together. Here is a principal-components analysis. The order in which the completions are supplied matches the principal component that matches the currently enabled extensions the best. An artificial neural network (ANN) uses similar ideas,but has the following advantage: this PCA-based method doesn't care about the signs, so a file with extensions <code>A</code> and <code>C</code> enabled will give the same prediction as a file with just <code>B</code> enabled.</p>
 <pre class="sourceCode r"><code class="sourceCode r">x2 &lt;- <span class="kw">ddply</span>(x, .(pkg), function(x)
             <span class="kw">within</span>(<span class="kw">count</span>(x, <span class="kw">c</span>(<span class="st">&#39;ext&#39;</span>), <span class="st">&#39;count&#39;</span>),
                    freq &lt;- freq/<span class="kw">sum</span>(freq)))
