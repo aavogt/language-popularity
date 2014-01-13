@@ -79,7 +79,9 @@ comp &lt;- <span class="kw">paste</span>(<span class="st">&#39;comp = [ [&#39;</
 <span class="st">import Data.List</span>
 <span class="st">rateLang :: [String] -&gt; [String]</span>
 <span class="st">rateLang enabled =</span>
-<span class="st">  let s = zipWith (</span><span class="ch">\\</span><span class="st"> cm c -&gt; (abs $ sum $ mapMaybe (`M.lookup` cm) enabled,</span>
+<span class="st">  let s = reverse $ -- maximumBy takes the last if all EQ</span>
+<span class="st">                    -- we want the first, which is the strongest component</span>
+<span class="st">            zipWith (</span><span class="ch">\\</span><span class="st"> cm c -&gt; (abs $ sum $ mapMaybe (`M.lookup` cm) enabled,</span>
 <span class="st">                               c)) </span>
 <span class="st">                comp2</span>
 <span class="st">                comp</span>

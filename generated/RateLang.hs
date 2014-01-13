@@ -5,7 +5,9 @@ import Data.Ord
 import Data.List
 rateLang :: [String] -> [String]
 rateLang enabled =
-  let s = zipWith (\ cm c -> (abs $ sum $ mapMaybe (`M.lookup` cm) enabled,
+  let s = reverse $ -- maximumBy takes the last if all EQ
+                    -- we want the first, which is the strongest component
+            zipWith (\ cm c -> (abs $ sum $ mapMaybe (`M.lookup` cm) enabled,
                                c)) 
                 comp2
                 comp
