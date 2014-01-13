@@ -1,3 +1,13 @@
+<!--pandoc
+format:html
+standalone:
+-->
+
+```{r}
+library(knitr)
+opts_chunk$set(cache=T, tidy=F)
+```
+
 ```{r}
 library(ggplot2); library(plyr)
 library(reshape2)
